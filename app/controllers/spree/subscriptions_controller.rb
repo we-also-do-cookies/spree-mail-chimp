@@ -13,11 +13,18 @@ class Spree::SubscriptionsController < Spree::BaseController
     elsif params[:email] !~ /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i
       @errors << t('invalid_email_address')
     else
-      hominid.list_subscribe(list, params[:email],MailChimpSync::Sync::mc_subscription_opts)
+      begin
+        hominid.list_subscribe(Spree::Config.get(:mailchimp_list_id), params[:email])
+      rescue
+        @errors << "It looks like you're already subscribed"
+      end
     end
 
-    respond_to do |wants|
-      wants.js
+    if @errors.blank?
+      redirect_to :back, :notice => "Thank you. You'll receive a validation email shortly."
+    else
+      redirect_to :back, :notice => @errors.join(",")
     end
+
   end
 end
