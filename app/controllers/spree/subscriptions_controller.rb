@@ -13,7 +13,7 @@ class Spree::SubscriptionsController < Spree::BaseController
     elsif params[:email] !~ /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i
       @errors << t('invalid_email_address')
     else
-      @hominid.list_subscribe(list, params[:email],MailChimpSync::Sync::mc_subscription_opts)
+      hominid.list_subscribe(list, params[:email],MailChimpSync::Sync::mc_subscription_opts)
     end
 
     respond_to do |wants|
